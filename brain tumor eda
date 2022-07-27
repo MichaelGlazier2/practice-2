@@ -11,3 +11,39 @@ from pydicom.pixel_data_handlers.util import apply_voi_lut
 import cv2
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+
+def load_dicom(path):
+    dicom = pydicom.read_file(path)
+    data = dicom.pixel_array
+    data = data - np.min(data)
+    if np.max(data) != 0:
+        data = data / np.max(data)
+    data = (data * 255).astype(np.uint8)
+    return data
+
+
+def visualize_sample(
+    brats21id, 
+    slice_i,
+    mgmt_value,
+    types=("FLAIR", "T1w", "T1wCE", "T2w")
+):
+    plt.figure(figsize=(16, 5))
+    patient_path = os.path.join(
+        "../input/rsna-miccai-brain-tumor-radiogenomic-classification/train/", 
+        str(brats21id).zfill(5),
+    )
+    for i, t in enumerate(types, 1):
+        t_paths = sorted(
+            glob.glob(os.path.join(patient_path, t, "*")), 
+            key=lambda x: int(x[:-4].split("-")[-1]),
+        )
+        data = load_dicom(t_paths[int(len(t_paths) * slice_i)])
+        plt.subplot(1, 4, i)
+        plt.imshow(data, cmap="gray")
+        plt.title(f"{t}", fontsize=16)
+        plt.axis("off")
+
+    plt.suptitle(f"MGMT_value: {mgmt_value}", fontsize=16)
+    plt.show()
