@@ -16,3 +16,4 @@ train_df = pd.read_csv("../input/rsna-miccai-brain-tumor-radiogenomic-classifica
 train_df
 plt.figure(figsize=(5, 5))
 sns.countplot(data=train_df, x="MGMT_value");
+#comment 2
