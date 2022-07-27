@@ -12,7 +12,7 @@ import cv2
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-#comment 1
+
 def load_dicom(path):
     dicom = pydicom.read_file(path)
     data = dicom.pixel_array
